@@ -523,6 +523,10 @@ kubectl get svc -n fleetman
 
 Le barème parle d’“application disponible si un worker tombe en panne”.
 Là, on a mis `replicas: 1` partout pour simplifier la compréhension.
+
+![Cluster deployment check](src/capture-repartition.png)
+
+
 Pour gagner ces points, il suffit dans ta version finale de mettre au moins 2 réplicas sur les composants critiques (web-app, api-gateway, tracker) et de laisser Kubernetes répartir sur les workers :
 
 ```yaml
@@ -532,4 +536,27 @@ spec:
 
 Comme ton cluster Kind a 1 control-plane + 2 workers, Kubernetes pourra programmer les pods sur un autre nœud si l’un tombe.
 
+
+
+| Déploiement                   | Action        | Justification                                                             |
+| ----------------------------- | ------------- | ------------------------------------------------------------------------- |
+| `fleetman-web-app`            | `replicas: 2` | Si le nœud du front meurt, le site reste accessible.                      |
+| `fleetman-api-gateway`        | `replicas: 2` | Si le nœud de l’API tombe, les requêtes passent sur l’autre.              |
+| `fleetman-position-tracker`   | `replicas: 2` | Les données continuent d’être servies même si un pod tombe.               |
+| `fleetman-position-simulator` | (facultatif)  | Pas critique, tu peux laisser à 1.                                        |
+| `fleetman-queue`              | `replicas: 1` | ⚠️ ActiveMQ ne supporte pas bien plusieurs instances sans config cluster. |
+| `fleetman-mongodb`            | `replicas: 1` | ⚠️ Mongo doit être en StatefulSet avec réplication — pas demandé ici.     |
+
+une fois les réplicats mis a 2 :
+```bash
+kubectl apply -f k8s/api-gateway.yaml                                                 
+kubectl apply -f k8s/web-app.yaml
+kubectl apply -f k8s/position-tracker.yaml
+
+kubectl get pods -n fleetman -o=custom-columns=NAME:.metadata.name,NODE:.spec.nodeName
+```
+
+![Cluster deployment check avec réplicats](src/capture-replicat.png)
+
+comme ont peut le voir les pods critique sont bien répliquer sur les bons workers
 ---

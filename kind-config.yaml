@@ -1,0 +1,22 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: fleetman
+nodes:
+  - role: control-plane
+    # On mappe les NodePorts vers la machine hôte pour accéder en localhost
+    extraPortMappings:
+      - containerPort: 30080   # trucks-web-app (NodePort 30080)
+        hostPort: 30080
+        protocol: TCP
+      - containerPort: 30020   # trucks-api-gateway (NodePort 30020)
+        hostPort: 30020
+        protocol: TCP
+  - role: worker
+  - role: worker
+networking:
+  # Laisser par défaut; Kind fournit un CNI fonctionnel
+  disableDefaultCNI: false
+  kubeProxyMode: "iptables"
+
+
+  

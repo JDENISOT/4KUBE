@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-position-simulator
+  namespace: fleetman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-position-simulator
+  template:
+    metadata:
+      labels:
+        app: fleetman-position-simulator
+    spec:
+      containers:
+        - name: simulator
+          image: supinfo4kube/position-simulator:1.0.1
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "production-microservice"
+          # si l'image attend des variables pour la queue, on pourrait les ajouter ici
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-position-simulator
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-position-simulator
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-api-gateway
+  namespace: fleetman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-api-gateway
+  template:
+    metadata:
+      labels:
+        app: fleetman-api-gateway
+    spec:
+      containers:
+        - name: api
+          image: supinfo4kube/api-gateway:1.0.1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "production-microservice"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-api-gateway
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-api-gateway
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30020

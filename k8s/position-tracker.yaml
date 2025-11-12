@@ -21,7 +21,6 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "production-microservice"
-            # si besoin d'URL Mongo/Queue on peut les ajouter ici
 ---
 apiVersion: v1
 kind: Service

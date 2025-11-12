@@ -19,7 +19,6 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "production-microservice"
-          # si l'image attend des variables pour la queue, on pourrait les ajouter ici
 ---
 apiVersion: v1
 kind: Service

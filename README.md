@@ -296,7 +296,7 @@ Captures : `src/capture-repartition.png`, `src/capture-replicat.png`.
 - après:
 ![Cluster deployment check](src/capture-replicat.png)
 
-> Astuce (optionnelle) : ajouter `topologySpreadConstraints` ou `podAntiAffinity` dans les templates pour **forcer** la répartition sur plusieurs nœuds. (non nécésaire)
+> Astuce (optionnelle) : ajouter `topologySpreadConstraints` ou `podAntiAffinity` dans les templates pour **forcer** la répartition sur plusieurs nœuds. (non nécessaire)
 
 ---
 
